@@ -52,17 +52,17 @@ function SearchBar({
 
       <div className="field">
         <label htmlFor="type-filter">Job type</label>
-        <select
-          id="type-filter"
-          value={type}
-          onChange={(event) => onTypeChange(event.target.value)}
-        >
-          <option value="">All job types</option>
-          <option value="Full-time">Full-time</option>
-          <option value="Part-time">Part-time</option>
-          <option value="Internship">Internship</option>
-          <option value="Contract">Contract</option>
-        </select>
+<select
+  value={type}
+  onChange={(event) => onTypeChange(event.target.value)}
+>
+  <option value="">All job types</option>
+  <option value="Full-time">Full-time</option>
+  <option value="Part-time">Part-time</option>
+  <option value="Internship">Internship</option>
+  <option value="Contract">Contract</option>
+</select>
+
       </div>
     </div>
   )

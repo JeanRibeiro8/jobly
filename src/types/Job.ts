@@ -1,9 +1,17 @@
+export type JobType =
+  | 'Full-time'
+  | 'Part-time'
+  | 'Internship'
+  | 'Contract'
+  | 'Unknown'
+
 export interface Job {
-  id: number
+  id: string
   title: string
   company: string
   location: string
-  type: 'Full-time' | 'Part-time' | 'Internship' | 'Contract'
+  type: JobType
   description: string
-  url: string // URL where the user can view and apply for the job
+  url: string
+  createdAt: number
 }
