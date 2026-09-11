@@ -15,7 +15,7 @@
 
 <br>
 
-### 🔗 [Live Demo](YOUR_DEPLOY_URL) · [Repository] https://github.com/JeanRibeiro8/jobly
+### 🔗 [Live Demo] https://jobly-omega-rose.vercel.app/ · [Repository] https://github.com/JeanRibeiro8/jobly
 
 </div>
 
@@ -353,7 +353,7 @@ The application is available online:
 
 <div align="center">
 
-### 👉 [Open Jobly](YOUR_DEPLOY_URL)
+### 👉 [Open Jobly] https://jobly-omega-rose.vercel.app/
 
 </div>
 
