@@ -32,6 +32,22 @@ a {
   text-decoration: none;
 }
 
+.clear-filters-button {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: #697286;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.clear-filters-button:hover {
+  color: #172033;
+  text-decoration: underline;
+}
+
 .loading-state {
   min-height: 300px;
   display: flex;

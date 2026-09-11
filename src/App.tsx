@@ -39,6 +39,45 @@ function normalizeJobType(types: string[]): JobType {
   return 'Unknown'
 }
 
+
+async function loadJobs(): Promise<Job[]> {
+  // Load multiple API pages so filters can search more jobs
+  const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  const responses = await Promise.all(
+    pages.map((pageNumber) =>
+      fetch(
+        `https://www.arbeitnow.com/api/job-board-api?page=${pageNumber}`
+      )
+    )
+  )
+
+  // Check if any API request failed
+  if (responses.some((response) => !response.ok)) {
+    throw new Error('Failed to fetch jobs')
+  }
+
+  // Convert all responses into JSON
+  const data = await Promise.all(
+    responses.map((response) => response.json())
+  )
+
+  // Combine jobs from all API pages into one array
+  const allJobs = data.flatMap((pageData) => pageData.data)
+
+  // Convert API data into data that our application understands
+  return allJobs.map((job: ArbeitnowJob) => ({
+    id: job.slug,
+    title: job.title,
+    company: job.company_name,
+    location: job.location,
+    description: job.description,
+    url: job.url,
+    createdAt: job.created_at,
+    type: normalizeJobType(job.job_types),
+  }))
+}
+
 function App() {
   // Number of jobs displayed on each page
   const JOBS_PER_PAGE = 10
@@ -65,61 +104,25 @@ function App() {
   const [type, setType] = useState('')
 
   async function fetchJobs() {
-    try {
-      // Start loading before the API request
-      setLoading(true)
+  try {
+    // Start loading before the API request
+    setLoading(true)
 
-      // Reset the previous error
-      setError(false)
+    // Reset the previous error
+    setError(false)
 
-      // Load multiple API pages so filters can search more jobs
-      const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const normalizedJobs = await loadJobs()
 
-      const responses = await Promise.all(
-        pages.map((pageNumber) =>
-          fetch(
-            `https://www.arbeitnow.com/api/job-board-api?page=${pageNumber}`
-          )
-        )
-      )
-
-      // Check if any API request failed
-      if (responses.some((response) => !response.ok)) {
-        throw new Error('Failed to fetch jobs')
-      }
-
-      // Convert all responses into JSON
-      const data = await Promise.all(
-        responses.map((response) => response.json())
-      )
-
-      // Combine jobs from all API pages into one array
-      const allJobs = data.flatMap((pageData) => pageData.data)
-
-      // Convert API data into data that our application understands
-      const normalizedJobs: Job[] = allJobs.map(
-        (job: ArbeitnowJob) => ({
-          id: job.slug,
-          title: job.title,
-          company: job.company_name,
-          location: job.location,
-          description: job.description,
-          url: job.url,
-          createdAt: job.created_at,
-          type: normalizeJobType(job.job_types),
-        })
-      )
-
-      // Store the normalized jobs
-      setJobs(normalizedJobs)
-    } catch {
-      // Store the error state if the request fails
-      setError(true)
-    } finally {
-      // Stop loading whether the request succeeds or fails
-      setLoading(false)
-    }
+    // Store the normalized jobs
+    setJobs(normalizedJobs)
+  } catch {
+    // Store the error state if the request fails
+    setError(true)
+  } finally {
+    // Stop loading whether the request succeeds or fails
+    setLoading(false)
   }
+}
 
   useEffect(() => {
     // Fetch jobs when the component loads
@@ -184,6 +187,13 @@ function App() {
   const hasNextPage =
     startIndex + JOBS_PER_PAGE < filteredJobs.length
 
+    const handleClearFilters = () => {
+  // Reset all search filters
+  setSearch('')
+  setLocation('')
+  setType('')
+  setPage(1)
+}
   return (
     <>
       <Header />
@@ -211,6 +221,15 @@ function App() {
               type={type}
               onTypeChange={setType}
             />
+
+            <button
+  type="button"
+  onClick={handleClearFilters}
+  className="clear-filters-button"
+>
+  Clear filters
+</button>
+            
           </div>
         </section>
 
